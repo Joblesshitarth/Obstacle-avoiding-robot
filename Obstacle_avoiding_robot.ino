@@ -26,7 +26,7 @@ long distance;
 long motorSpeed=175;
 int leftDistance;
 int rightDistance;
-
+bool rfidState;
 //------------------------
 //------DECLARATION-------
 //------------------------
@@ -55,10 +55,10 @@ void setup() {
     lcd.setCursor(0, 1);
     lcd.print("Loading...");
     delay(300);
-}
+ }
   lcd.clear();
   lcd.print("Robot Initiated!");
-  Wire.begin(8);
+  Wire.begin();
   motor1.setSpeed(motorSpeed);
   motor2.setSpeed(motorSpeed);
   motor3.setSpeed(motorSpeed);
@@ -95,13 +95,18 @@ void right() {
 
 
 void loop() {
-  forward();
-  Wire.requestFrom(8, 1);
+  Wire.requestFrom(8, 2);
 
-  if (Wire.available()) {
+  if (Wire.available()>=2) {
     distance = Wire.read();
+    rfidState=Wire.read();
   }
-  if (distance<=30){
+  if (rfidState==false){
+
+  }
+  else{
+    forward();
+    if (distance<=30){
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Obstacledetected");
@@ -140,5 +145,9 @@ void loop() {
 
   }
     
+
+
+  }
+  
   
 }  
